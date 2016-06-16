@@ -5,7 +5,7 @@ Odometer encoderLeft(190), encoderRight(190); //Βάλτε τους δικούς
 Gyroscope gyro(13); //Βάλτε την κατάλληλη τιμή σύμφωνα με το γυροσκόπιό σας
 Car folkracer;
 SR04 sonarLeft, sonarRight, sonarFront; //dilwse tis metavlites sonarLeft, sonarRight kai sonarFront pou antiproswpevoun tous iperixous
-SoftwareSerial bluetooth(6,7); //συνδέστε το bluetooth ως εξής: Το RX του Bluetooth στο pin 6 και το ΤΧ του bluetooth στο pin 7 (VCC -> 5V, GND -> GND)
+SoftwareSerial bluetooth(6, 7); //συνδέστε το bluetooth ως εξής: Το RX του Bluetooth στο pin 6 και το ΤΧ του bluetooth στο pin 7 (VCC -> 5V, GND -> GND)
 
 /* Χρησιμοποιήστε τα σωστά pins!!!! */
 const int SONAR_LEFT_TRIGGER = 4; //trigger του αριστερού υπέρηχου
@@ -35,9 +35,9 @@ void setup() {
 
 void loop() {
   folkracer.updateMotors(); //διατήρησε την ταχύτητα του αυτοκινήτου σταθερή
-  int frontDistance = sonarFront.getMedianDistance(3); //μέτρησε την απόσταση (φιλτράρισε 3 μετρήσεις) και αποθήκευσέ την στη μεταβλητή frontDistance
-  int leftDistance = sonarLeft.getMedianDistance(3);
-  int rightDistance = sonarRight.getMedianDistance(3);
+  int frontDistance = sonarFront.getMedianDistance(6); //μέτρησε την απόσταση (φιλτράρισε 6 μετρήσεις) και αποθήκευσέ την στη μεταβλητή frontDistance
+  int leftDistance = sonarLeft.getMedianDistance(6);
+  int rightDistance = sonarRight.getMedianDistance(6);
   bluetooth.print(frontDistance); //εκτύπωσε τις αποστάσεις με την εξής μορφή: μπροστινήΑπόσταση,αριστεράΑπόσταση,δεξιάΑπόσταση
   bluetooth.print(",");
   bluetooth.print(leftDistance);
@@ -48,9 +48,45 @@ void loop() {
   //από ότι τον αριστερό, στρίψτε δεξιά, αλλιώς αριστερά. Το πόσο θα στρίψετε αριστερά, με το folkracer.setAngle θα το βρείτε πειραματικά. Αρχίστε τις δοκιμές με το setAngle(50).
   //Εάν βρίσκει εμπόδιο μπροστά σε κοντινή απόσταση, ας στρίβει προς τα δεξιά κατά 75 μοίρες, με το setAngle.
   //Στο σχολείο, να διαβάζετε (στο serial monitor του Arduino IDE) τις αποστάσεις που ανιχνεύει το αυτοκινητάκι ασύρματα μέσω bluetooth, έτσι ώστε να καταλάβετε τι "διαβάζει"
-  //το αυτοκινητάκι όταν κινείται στην πίστα!  
-  if (rightDistance == 0 && leftDistance == 0) {
-    set.Angle(0);
+  //το αυτοκινητάκι όταν κινείται στην πίστα!
+  if (leftDistance == 0 && rightDistance == 0) { //c3
+    folkracer.setAngle(0);
+    bluetooth.println("pigainei efthia 1");
   }
-  if (rightDistance > 0 && rightDistance  < 30 && leftDisance == 0);
+  if (rightDistance < 30 && rightDistance > 0 && leftDistance < 30 && leftDistance > 0) { //d4
+    folkracer.setAngle(0);
+    bluetooth.println("pigainei efthia 2");
+  }
+  if (rightDistance < 30 && rightDistance > 0 && leftDistance == 0) { //d3
+    folkracer.setAngle(-60);
+    bluetooth.println("strivei aristera 1");
+  }
+  if (rightDistance > 30 && leftDistance == 0) { //e3
+    folkracer.setAngle(0);
+    bluetooth.println("pigainei efthia 3");
+  }
+  if (leftDistance < 30 && leftDistance > 0 && rightDistance == 0) { //c4
+    folkracer.setAngle(60);
+    bluetooth.println("strivei dexia 1");
+  }
+  if (rightDistance > 30 && leftDistance < 30 && leftDistance > 0) { //e4 
+    folkracer.setAngle(60);
+    bluetooth.println("strivei dexia 1");
+  }
+  if (rightDistance == 0 && leftDistance > 30) { //c5 
+    folkracer.setAngle(0);
+    bluetooth.println("pigainei efthia 4");
+  } 
+  if (rightDistance < 30 && rightDistance > 0 && leftDistance > 30) { //d5
+    folkracer.setAngle(-60);
+    bluetooth.println("strivei aristera 1");
+  }
+  if (rightDistance > 30 && leftDistance > 30) { //e5
+    folkracer.setAngle(0);
+    bluetooth.println("pigainei efthia 5");
+  }
+  if (frontDistance < 20 && frontDistance > 0) { //g6
+    folkracer.setAngle(80);
+    bluetooth.println("strivei dexia 2");
+  }
 }
