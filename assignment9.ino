@@ -51,42 +51,42 @@ void loop() {
   //το αυτοκινητάκι όταν κινείται στην πίστα!
   if (leftDistance == 0 && rightDistance == 0) { //c3
     folkracer.setAngle(0);
-    bluetooth.println("pigainei efthia 1");
+    bluetooth.println("pigainei efthia c3");
   }
   if (rightDistance < 30 && rightDistance > 0 && leftDistance < 30 && leftDistance > 0) { //d4
     folkracer.setAngle(0);
-    bluetooth.println("pigainei efthia 2");
+    bluetooth.println("pigainei efthia c4");
   }
   if (rightDistance < 30 && rightDistance > 0 && leftDistance == 0) { //d3
     folkracer.setAngle(-60);
-    bluetooth.println("strivei aristera 1");
+    bluetooth.println("strivei aristera d3");
   }
   if (rightDistance > 30 && leftDistance == 0) { //e3
     folkracer.setAngle(0);
-    bluetooth.println("pigainei efthia 3");
+    bluetooth.println("pigainei efthia e3");
   }
   if (leftDistance < 30 && leftDistance > 0 && rightDistance == 0) { //c4
     folkracer.setAngle(60);
-    bluetooth.println("strivei dexia 1");
+    bluetooth.println("strivei dexia c4");
   }
   if (rightDistance > 30 && leftDistance < 30 && leftDistance > 0) { //e4 
     folkracer.setAngle(60);
-    bluetooth.println("strivei dexia 1");
+    bluetooth.println("strivei dexia e4");
   }
   if (rightDistance == 0 && leftDistance > 30) { //c5 
     folkracer.setAngle(0);
-    bluetooth.println("pigainei efthia 4");
+    bluetooth.println("pigainei efthia c5");
   } 
   if (rightDistance < 30 && rightDistance > 0 && leftDistance > 30) { //d5
     folkracer.setAngle(-60);
-    bluetooth.println("strivei aristera 1");
+    bluetooth.println("strivei aristera d5");
   }
   if (rightDistance > 30 && leftDistance > 30) { //e5
     folkracer.setAngle(0);
-    bluetooth.println("pigainei efthia 5");
+    bluetooth.println("pigainei efthia e5");
   }
   if (frontDistance < 20 && frontDistance > 0) { //g6
     folkracer.setAngle(80);
-    bluetooth.println("strivei dexia 2");
+    bluetooth.println("strivei dexia g6");
   }
 }
