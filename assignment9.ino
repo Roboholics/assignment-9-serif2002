@@ -2,10 +2,12 @@
 #include <SoftwareSerial.h>
 
 Odometer encoderLeft(190), encoderRight(190); //Βάλτε τους δικούς σας παλμούς ανά μέτρο
-Gyroscope gyro(13); //Βάλτε την κατάλληλη τιμή σύμφωνα με το γυροσκόπιό σας
+Gyroscope gyro(5); //Βάλτε την κατάλληλη τιμή σύμφωνα με το γυροσκόπιό σας
 Car folkracer;
 SR04 sonarLeft, sonarRight, sonarFront; //dilwse tis metavlites sonarLeft, sonarRight kai sonarFront pou antiproswpevoun tous iperixous
 SoftwareSerial bluetooth(6, 7); //συνδέστε το bluetooth ως εξής: Το RX του Bluetooth στο pin 6 και το ΤΧ του bluetooth στο pin 7 (VCC -> 5V, GND -> GND)
+int degrees = 20 ;
+int motorSpeed = 50;
 
 /* Χρησιμοποιήστε τα σωστά pins!!!! */
 const int SONAR_LEFT_TRIGGER = 4; //trigger του αριστερού υπέρηχου
@@ -26,10 +28,10 @@ void setup() {
   encoderLeft.begin();//ξεκινάει τις μετρήσεις στον encoder
   encoderRight.begin();
   folkracer.begin(encoderLeft, encoderRight, gyro); //ξεκινάει το αυτοκίνητο χρησιμοποιώντας τα encoders και το γυροσκόπειο
-  folkracer.enableCruiseControl(); //ξεκινάει τον έλεγχο της ταχύτητας του αυτοκινήτου
+ // folkracer.enableCruiseControl(); //ξεκινάει τον έλεγχο της ταχύτητας του αυτοκινήτου
   gyro.begin(); //ξεκινάει τις μετρήσεις στο γυροσκόπειο
   /* Εάν θέλετε να διαβάσετε απλά τις αποστάσεις, δίχως να κινείται το αυτοκινητάκι, βάλτε ταχύτητα 0 στην παρακάτω γραμμή */
-  folkracer.setSpeed(0); //θέτει την ταχύτητα στο αυτοκινητάκι στα 0.2 μέτρα ανά δευτερόλεπτο (εάν είναι πολύ αργό, αυξήστε λίγο την ταχύτητα)
+  folkracer.setSpeed(motorSpeed); //θέτει την ταχύτητα στο αυτοκινητάκι στα 0.2 μέτρα ανά δευτερόλεπτο (εάν είναι πολύ αργό, αυξήστε λίγο την ταχύτητα)
   folkracer.setAngle(0); //Το αυτοκινητάκι πηγαίνει ευθεία
 }
 
@@ -58,35 +60,54 @@ void loop() {
     bluetooth.println("pigainei efthia c4");
   }
   if (rightDistance < 30 && rightDistance > 0 && leftDistance == 0) { //d3
-    folkracer.setAngle(-60);
+   // folkracer.setAngle(-80);
     bluetooth.println("strivei aristera d3");
+   //rotateOnSpot(-degrees);
   }
   if (rightDistance > 30 && leftDistance == 0) { //e3
     folkracer.setAngle(0);
     bluetooth.println("pigainei efthia e3");
   }
   if (leftDistance < 30 && leftDistance > 0 && rightDistance == 0) { //c4
-    folkracer.setAngle(60);
+    //folkracer.setAngle(80);
     bluetooth.println("strivei dexia c4");
+   // rotateOnSpot(degrees);  
   }
   if (rightDistance > 30 && leftDistance < 30 && leftDistance > 0) { //e4 
-    folkracer.setAngle(60);
+    //folkracer.setAngle(80);
     bluetooth.println("strivei dexia e4");
+   // rotateOnSpot(degrees);
   }
   if (rightDistance == 0 && leftDistance > 30) { //c5 
     folkracer.setAngle(0);
     bluetooth.println("pigainei efthia c5");
   } 
   if (rightDistance < 30 && rightDistance > 0 && leftDistance > 30) { //d5
-    folkracer.setAngle(-60);
+   // folkracer.setAngle(-80);
     bluetooth.println("strivei aristera d5");
+   // rotateOnSpot(-degrees);
   }
   if (rightDistance > 30 && leftDistance > 30) { //e5
     folkracer.setAngle(0);
     bluetooth.println("pigainei efthia e5");
   }
   if (frontDistance < 20 && frontDistance > 0) { //g6
-    folkracer.setAngle(80);
+   // folkracer.setAngle(80);
     bluetooth.println("strivei dexia g6");
+    //rotateOnSpot(degrees);
   }
 }
+/*void rotateOnSpot(int targetDegrees){
+  if (!targetDegrees) return; //if the target degrees is 0, don't bother doing anything
+  gyro.begin(); //initiate the measurement
+  // Let's set opposite speed on each side of the car, so it rotates on spot 
+  if (targetDegrees > 0){ //positive value means we should rotate clockwise
+    folkracer.setMotorSpeed(motorSpeed, -motorSpeed); // left motors spin forward, right motors spin backward
+  }else{ //rotate counter clockwise
+    folkracer.setMotorSpeed(-motorSpeed, motorSpeed); // left motors spin backward, right motors spin forward
+  }
+  while (abs(gyro.getAngularDisplacement()) <= abs(targetDegrees)){ //while we have not reached the desired degrees
+    gyro.update(); //update the gyro readings
+  }
+ // folkracer.stop(); //we have reached the target, so stop the car
+}*/
